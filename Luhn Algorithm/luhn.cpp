@@ -2,7 +2,7 @@
 #include <math.h>
 
 int validation(long long int num);
-bool isValid(int mod);
+bool isValid(long long int num);
 
 int main()
 {
@@ -66,7 +66,8 @@ int validation(long long int num)
     return sum % 10;
 }
 
-bool isValid(int mod)
+bool isValid(long long int num)
 {
+    int mod = validation(num);
     return mod == 0;
 }
