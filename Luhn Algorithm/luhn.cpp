@@ -2,7 +2,7 @@
 #include <math.h>
 
 int validation(long long int num);
-bool isValid(long long int num);
+bool isValid(int mod);
 
 int main()
 {
@@ -11,8 +11,8 @@ int main()
     std::cout << "Input Number: ";
     std::cin >> number;
 
-    int result = isValid(number);
-    if(result == 0)
+    int result = validation(number);
+    if(isValid(result))
         std::cout << "Number is Valid.";
     else
         std::cout << "Number is not Valid.";
@@ -22,52 +22,64 @@ int main()
 
 int validation(long long int num)
 {
-    int sec_num[5] = {0}, num_arr[11] = {0};
-    int temp_num = num, ctr = 0, sum = 0;
+    int num_arr[11] = {0};
+    int sum = 0;
 
-    for(int i = 0; temp_num != 0; i++)
+    for(int i = 0; num != 0; i++)
     {
-        num_arr[i] = temp_num % 10;
-        temp_num /= 10;
+        num_arr[i] = num % 10;
+        num /= 10;
     }
 
+    // Luhn's Algorithm
     for(int i = 0; i < 11; i++)
     {
-        if(i % 2 == 0)
+        if(i % 2 != 0)
         {
-            sec_num[ctr] = sec_num[i];
-            ctr++;
+            num_arr[i] *= 2;
+            if(num_arr[i] >= 10)
+                num_arr[i] = (num_arr[i] / 10) + (num_arr[i] % 10);
         }
+        sum += num_arr[i];
     }
 
-    for(int i = 0; i < 5; i++)
-    {
-        sec_num[i] *= 2;
-        if(sec_num[i] >= 10)
-        {
-            int left = sec_num[i] % 10;
-            int right = sec_num[i] / 10;
-            sec_num[i] = left + right;
-        }
-    }
+    //std::cout << sum << std::endl;
+    // for(int i = 0; i < 11; i++)
+    // {
+    //     if(i % 2 == 0)
+    //     {
+    //         sec_num[ctr] = sec_num[i];
+    //         ctr++;
+    //     }
+    // }
 
-    ctr = 0;
-    for(int i = 0; i < 11; i++)
-    {
-        if(i % 2 == 0)
-        {
-            sum += sec_num[ctr];
-            ctr++;
-        }
-        else
-            sum += num_arr[i];
-    }
+    // for(int i = 0; i < 5; i++)
+    // {
+    //     sec_num[i] *= 2;
+    //     if(sec_num[i] >= 10)
+    //     {
+    //         int left = sec_num[i] % 10;
+    //         int right = sec_num[i] / 10;
+    //         sec_num[i] = left + right;
+    //     }
+    // }
+
+    // ctr = 0;
+    // for(int i = 0; i < 11; i++)
+    // {
+    //     if(i % 2 == 0)
+    //     {
+    //         sum += sec_num[ctr];
+    //         ctr++;
+    //     }
+    //     else
+    //         sum += num_arr[i];
+    // }
 
     return sum % 10;
 }
 
-bool isValid(long long int num)
+bool isValid(int mod)
 {
-    int mod = validation(num);
     return mod == 0;
 }
