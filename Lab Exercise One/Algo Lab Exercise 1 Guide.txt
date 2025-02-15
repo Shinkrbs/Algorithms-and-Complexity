@@ -1,0 +1,3 @@
+Algo Lab Exercise 1 Guide:
+1. Install Python and compile Python Notebook
+2. Save as Python Notebook
