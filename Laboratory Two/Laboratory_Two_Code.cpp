@@ -10,10 +10,11 @@
 std::vector<int> rand_data(int size);
 void rec_to_text(std::string file_name, std::vector<double> &result);
 
-// Sorting algorithms
+//n^2 algorithms
 void selectionSort(std::vector<int> &data);
 void bubbleSort(std::vector<int> &data);
 void insertionSort(std::vector<int> &data);
+//O(n logn) algorithms
 void mergeSort(std::vector<int> &a, int start, int end);
 void mergeArr(std::vector<int> &a, int start, int mid, int end);
 void quickSort(std::vector<int> &a, int start, int end);
@@ -63,7 +64,6 @@ int main() {
         result_quick.push_back(std::chrono::duration<double, std::milli>(end - start).count());
     }
 
-    // Write results to text files
     rec_to_text("SelectionSortTimes.txt", result_selection);
     rec_to_text("BubbleSortTimes.txt", result_bubble);
     rec_to_text("InsertionSortTimes.txt", result_insertion);
@@ -115,7 +115,8 @@ void selectionSort(std::vector<int> &data)
     }
 }
 
-void bubbleSort(std::vector<int> &data) {
+void bubbleSort(std::vector<int> &data) 
+{
     int i = 0;
     bool swp = true;
     while (swp)
