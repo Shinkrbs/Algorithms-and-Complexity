@@ -7,238 +7,189 @@
 #include <fstream>
 #include <iomanip>
 
-std::vector<int> rand_data();
+std::vector<int> rand_data(int size);
 void rec_to_text(std::string file_name, std::vector<double> &result);
 
-//n^2 algorithms
-void selectionSort(); // Done
-void bubbleSort(); // Done
-void insertionSort(); // Done
+// Sorting algorithms
+void selectionSort(std::vector<int> &data);
+void bubbleSort(std::vector<int> &data);
+void insertionSort(std::vector<int> &data);
+void mergeSort(std::vector<int> &a, int start, int end);
+void mergeArr(std::vector<int> &a, int start, int mid, int end);
+void quickSort(std::vector<int> &a, int start, int end);
 
-//O(n logn) algorithms
-void mergeSort(std::vector<int> &a, int start, int end, std::vector<double> &result); // Done
-void mergeArr(std::vector<int> &a,int start, int mid, int end); // Done
-void quickSort(std::vector<int> &a,int start, int end, std::vector<double> &result);
+int main() {
+    // Array sizes to test
+    std::vector<int> sizes = {10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000};
+    
+    // Create files for results
+    std::vector<double> result_selection, result_bubble, result_insertion, result_merge, result_quick;
 
-int main()
-{
-    selectionSort();
-    bubbleSort();
-    insertionSort();
+    for (int size : sizes) {
+        std::vector<int> data = rand_data(size);
 
-    // Merge Sort
-    std::vector<int> data_merge = rand_data();
-    std::vector<double> result_merge;
+        // Measure execution time for Selection Sort
+        auto start = std::chrono::high_resolution_clock::now();
+        selectionSort(data);
+        auto end = std::chrono::high_resolution_clock::now();
+        result_selection.push_back(std::chrono::duration<double, std::milli>(end - start).count());
 
-    mergeSort(data_merge, 0, data_merge.size(), result_merge);
-    rec_to_text("Merge.txt", result_merge);
+        // Measure execution time for Bubble Sort
+        data = rand_data(size);  // Reset data
+        start = std::chrono::high_resolution_clock::now();
+        bubbleSort(data);
+        end = std::chrono::high_resolution_clock::now();
+        result_bubble.push_back(std::chrono::duration<double, std::milli>(end - start).count());
 
-    // Quick Sort
-    std::vector<int> data_quick = rand_data();
-    std::vector<double> result_quick;
+        // Measure execution time for Insertion Sort
+        data = rand_data(size);  // Reset data
+        start = std::chrono::high_resolution_clock::now();
+        insertionSort(data);
+        end = std::chrono::high_resolution_clock::now();
+        result_insertion.push_back(std::chrono::duration<double, std::milli>(end - start).count());
 
-    quickSort(data_quick, 0, data_quick.size(), result_quick);
-    rec_to_text("Quick.txt", result_quick);
+        // Measure execution time for Merge Sort
+        data = rand_data(size);  // Reset data
+        start = std::chrono::high_resolution_clock::now();
+        mergeSort(data, 0, data.size() - 1);
+        end = std::chrono::high_resolution_clock::now();
+        result_merge.push_back(std::chrono::duration<double, std::milli>(end - start).count());
 
+        // Measure execution time for Quick Sort
+        data = rand_data(size);  // Reset data
+        start = std::chrono::high_resolution_clock::now();
+        quickSort(data, 0, data.size() - 1);
+        end = std::chrono::high_resolution_clock::now();
+        result_quick.push_back(std::chrono::duration<double, std::milli>(end - start).count());
+    }
+
+    // Write results to text files
+    rec_to_text("SelectionSortTimes.txt", result_selection);
+    rec_to_text("BubbleSortTimes.txt", result_bubble);
+    rec_to_text("InsertionSortTimes.txt", result_insertion);
+    rec_to_text("MergeSortTimes.txt", result_merge);
+    rec_to_text("QuickSortTimes.txt", result_quick);
 
     return 0;
 }
 
-std::vector<int> rand_data()
+std::vector<int> rand_data(int size) 
 {
-    int size = 1000;
     std::vector<int> data;
-    std::srand (std::time(NULL));
-
-    for (int i = 0; i < size; i++)
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    for (int i = 0; i < size; i++) {
         data.push_back(1000 + rand() % 100000);
+    }
     return data;
 }
 
-void rec_to_text(std::string file_name, std::vector<double> &result)
+void rec_to_text(std::string file_name, std::vector<double> &result) 
 {
     std::ofstream file(file_name);
-
-    if (!file)
+    if (!file) 
     {
         std::cout << "Error: Unable to Open File." << std::endl;
         return;
     }
-    file << std::fixed << std::setprecision(10); 
+    file << std::fixed << std::setprecision(10);
     for (const auto &results : result)
         file << results << "\n";
 
-    std::cout << "Program Done!";
+    std::cout << "Results have been written to " << file_name << "\n";
     file.close();
 }
 
-void selectionSort()
+// Sorting algorithm implementations
+void selectionSort(std::vector<int> &data) 
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    std::vector<int> data = rand_data();
-    std::vector<double> result;
     int small, idx_small;
-
-    for(int i = 0; i < data.size() - 1; i++)
+    for (int i = 0; i < data.size() - 1; i++) 
     {
         idx_small = i;
-        for(int j = i + 1; j < data.size(); j++)
+        for (int j = i + 1; j < data.size(); j++)
         {
-            if(data[j] < data[idx_small])
+            if (data[j] < data[idx_small]) 
                 idx_small = j;
         }
-    std::swap(data[i], data[idx_small]);
-
-    // Calculating time
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> time_taken = end - start;
-    result.push_back(time_taken.count());
-
-    for (int idx = 0; idx < data.size(); idx++)
-        std::cout << data[idx] << ",";
-    std::cout << std::endl;
+        std::swap(data[i], data[idx_small]);
     }
-
-    // Saving to Text File
-    rec_to_text("Selection.txt", result);
 }
 
-void bubbleSort()
-{
-    auto start = std::chrono::high_resolution_clock::now();
-    std::vector<int> data = rand_data();
-    std::vector<double> result;
+void bubbleSort(std::vector<int> &data) {
     int i = 0;
-    bool swp = 1;
-
-    while(swp)
+    bool swp = true;
+    while (swp)
     {
-        swp = 0;
-        for (int j = data.size() - 1; j > i; j--)
+        swp = false;
+        for (int j = data.size() - 1; j > i; j--) 
         {
-            if (data[j] < data[j - 1])
+            if (data[j] < data[j - 1]) 
             {
                 std::swap(data[j], data[j - 1]);
-                swp = 1;
+                swp = true;
             }
         }
-
-        for (int idx = 0; idx < data.size();idx++)
-            std::cout << data[idx] <<",";
-        std::cout << std::endl;
         i++;
-
-        // Calculating time
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> time_taken = end - start;
-        result.push_back(time_taken.count());
     }
-    
-    // Saving to Text File
-    rec_to_text("Bubble.txt", result);
 }
 
-void insertionSort()
+void insertionSort(std::vector<int> &data) 
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    std::vector<int> data = rand_data();
-    std::vector<double> result;
-    int key,j;
-
-    for (int i = 0; i < data.size(); i++)
+    int key, j;
+    for (int i = 1; i < data.size(); i++) 
     {
         key = data[i];
         j = i - 1;
-        while(key < data[j] && j >= 0)
+        while (j >= 0 && key < data[j]) 
         {
             data[j + 1] = data[j];
             j--;
         }
         data[j + 1] = key;
-
-        for (int idx = 0; idx < data.size(); idx++)
-            std::cout << data[idx] << ",";
-        std::cout << std::endl;
-
-        // Calculating time
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> time_taken = end - start;
-        result.push_back(time_taken.count());
     }
-
-    // Saving to Text File
-    rec_to_text("Insertion.txt", result);
 }
 
-void mergeSort(std::vector<int> &a, int start, int end, std::vector<double> &result)
+void mergeSort(std::vector<int> &a, int start, int end) 
 {
-    auto s = std::chrono::high_resolution_clock::now();
-    int mid;
-    if(start < end)
+    if (start < end) 
     {
-        mid = (start + end) / 2;
-        //cout<<start<<","<<mid<<",";
-
-        mergeSort(a, start, mid, result);
-        mergeSort(a, mid + 1, end, result);
-
-        for(int idx = 0; idx < 10; idx++)
-            std::cout << a[idx] << ",";
-        std::cout<<std::endl;
+        int mid = (start + end) / 2;
+        mergeSort(a, start, mid);
+        mergeSort(a, mid + 1, end);
         mergeArr(a, start, mid, end);
-
-        for (int idx = 0; idx < 10; idx++)
-            std::cout << a[idx] << ",";
-        std::cout << std::endl;
-
-        auto e = std::chrono::high_resolution_clock::now(); 
-        std::chrono::duration<double> time_taken = e - s;
-        result.push_back(time_taken.count()); 
     }
 }
 
-void mergeArr(std::vector<int> &a,int start, int mid, int end)
+void mergeArr(std::vector<int> &a, int start, int mid, int end) 
 {
-    int size = end - start + 1; 
+    int size = end - start + 1;
     std::vector<int> temp(size);
-
     int ptr1 = start, ptr2 = mid + 1, j = 0;
 
-    /* The while loop below would execute  equal to the
-        minimum of mid and (n-mid)
-    */
-    while (ptr1 <= mid && ptr2 <= end)
+    while (ptr1 <= mid && ptr2 <= end) 
     {
-        if (a[ptr1] < a[ptr2])
+        if (a[ptr1] < a[ptr2]) 
             temp[j++] = a[ptr1++];
-        else
+        else 
             temp[j++] = a[ptr2++];
     }
 
-    while (ptr1 <= mid)
-        temp[j++] = a[ptr1++];
+    while (ptr1 <= mid) temp[j++] = a[ptr1++];
+    while (ptr2 <= end) temp[j++] = a[ptr2++];
 
-    while (ptr2 <= end)
-        temp[j++] = a[ptr2++];
-
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++) 
         a[start + i] = temp[i];
 }
 
-void quickSort(std::vector<int> &a, int start, int end, std::vector<double> &result)
+void quickSort(std::vector<int> &a, int start, int end) 
 {
-    if (start >= end)
-        return;
+    if (start >= end) return;
 
-    auto s = std::chrono::high_resolution_clock::now();
-
-    // Choose the last element as pivot
     int pivot = a[end];
     int i = start - 1;
-
-    for (int j = start; j < end; j++)
+    for (int j = start; j < end; j++) 
     {
-        if (a[j] <= pivot)
+        if (a[j] <= pivot) 
         {
             i++;
             std::swap(a[i], a[j]);
@@ -247,16 +198,6 @@ void quickSort(std::vector<int> &a, int start, int end, std::vector<double> &res
     std::swap(a[i + 1], a[end]);
 
     int partitionIdx = i + 1;
-
-    auto e = std::chrono::high_resolution_clock::now(); 
-    std::chrono::duration<double> time_taken = e - s;
-    result.push_back(time_taken.count());
-
-    quickSort(a, start, partitionIdx - 1, result);
-    quickSort(a, partitionIdx + 1, end, result);
-
-    // Print the array after each partition step for debugging
-    for (int idx = 0; idx < a.size(); idx++)
-        std::cout << a[idx] << ",";
-    std::cout << std::endl;
+    quickSort(a, start, partitionIdx - 1);
+    quickSort(a, partitionIdx + 1, end);
 }
