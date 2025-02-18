@@ -51,7 +51,7 @@ std::vector<int> rand_data()
     std::srand (std::time(NULL));
 
     for (int i = 0; i < size; i++)
-        data.push_back(100 + rand() % 100000);
+        data.push_back(1000 + rand() % 100000);
     return data;
 }
 
