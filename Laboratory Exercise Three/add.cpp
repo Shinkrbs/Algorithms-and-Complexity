@@ -465,33 +465,34 @@ int main()
     
     vector<double> result_bst, result_avl, result_rbt;
     
-    for (int size : sizes) {
+    for (int size : sizes) 
+    {
         vector<int> data = rand_data(size);
         
-        // Measure execution time for BST insertion
+        // BST insertion
         bst_node *bst_root = nullptr;
         auto start = chrono::high_resolution_clock::now();
-        for (int val : data) {
+        for (int val : data) 
             bst_root = insert_bst(bst_root, val);
-        }
+
         auto end = chrono::high_resolution_clock::now();
         result_bst.push_back(chrono::duration<double, milli>(end - start).count());
 
-        // Measure execution time for AVL insertion
+        // AVL insertion
         avl_node *avl_root = nullptr;
         start = chrono::high_resolution_clock::now();
-        for (int val : data) {
+        for (int val : data) 
             avl_root = insert_avlnode(avl_root, val);
-        }
+
         end = chrono::high_resolution_clock::now();
         result_avl.push_back(chrono::duration<double, milli>(end - start).count());
 
-        // Measure execution time for RBT insertion
+        // RBT insertion
         RedBlackTree rbt;
         start = chrono::high_resolution_clock::now();
-        for (int val : data) {
+        for (int val : data) 
             rbt.insert(val);
-        }
+
         end = chrono::high_resolution_clock::now();
         result_rbt.push_back(chrono::duration<double, milli>(end - start).count());
     }
@@ -499,6 +500,6 @@ int main()
     rec_to_text("BSTInsertionTimes.txt", result_bst);
     rec_to_text("AVLInsertionTimes.txt", result_avl);
     rec_to_text("RBTInsertionTimes.txt", result_rbt);
-    
+
     return 0;
 }
