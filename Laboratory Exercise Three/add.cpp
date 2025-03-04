@@ -31,6 +31,20 @@ struct bst_node *insert_bst(struct bst_node *node, int key)
     return node;
 }
 
+// Inorder Traversal; To print
+void bst_inorder(struct bst_node *root) 
+{
+    if (root != NULL) 
+    {
+        // Traverse left
+        bst_inorder(root->left);
+        // Traverse root
+        cout << root->key << " -> ";
+        // Traverse right
+        bst_inorder(root->right);
+    }
+}
+
 // AVL Tree
 class avl_node 
 {
@@ -139,6 +153,29 @@ avl_node *insert_avlnode(avl_node *node, int key)
     return node;
 }
 
+// Print the tree
+void print_avltree(avl_node *root, string indent, bool last) 
+{
+    if (root != nullptr) 
+    {
+        cout << indent;
+        if (last) 
+        {
+            cout << "R----";
+            indent += "   ";
+        } 
+        else 
+        {
+            cout << "L----";
+            indent += "|  ";
+        }
+
+        cout << root->key << endl;
+        print_avltree(root->left, indent, false);
+        print_avltree(root->right, indent, true);
+    }
+}
+
 // Red-Black Tree
 struct rbt_node 
 {
@@ -158,6 +195,15 @@ class RedBlackTree
         NodePtr TNULL;
     
     public:
+    RedBlackTree() 
+    {
+        TNULL = new rbt_node;
+        TNULL->color = 0;
+        TNULL->left = nullptr;
+        TNULL->right = nullptr;
+        root = TNULL;
+    }
+
     void initializeNULLNode(NodePtr node, NodePtr parent) 
     {
         node->data = 0;
@@ -305,6 +351,36 @@ class RedBlackTree
             return;
 
         insertFix(node);
+    }
+
+    // Print RBT
+    void printHelper(NodePtr root, string indent, bool last) 
+    {
+        if (root != TNULL) 
+        {
+            cout << indent;
+            if (last) 
+            {
+                cout << "R----";
+                indent += "   ";
+            } 
+            else
+            {
+                cout << "L----";
+                indent += "|  ";
+            }
+    
+            string sColor = root->color ? "RED" : "BLACK";
+            cout << root->data << "(" << sColor << ")" << endl;
+            printHelper(root->left, indent, false);
+            printHelper(root->right, indent, true);
+        }
+    }
+
+    void printTree() 
+    {
+        if (root) 
+            printHelper(this->root, "", true);
     }
 };
 
