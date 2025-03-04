@@ -386,5 +386,47 @@ class RedBlackTree
 
 int main()
 {
+    // BST test
+    struct bst_node *bst_root = NULL;
+    bst_root = insert_bst(bst_root, 8);
+    bst_root = insert_bst(bst_root, 3);
+    bst_root = insert_bst(bst_root, 1);
+    bst_root = insert_bst(bst_root, 6);
+    bst_root = insert_bst(bst_root, 7);
+    bst_root = insert_bst(bst_root, 10);
+    bst_root = insert_bst(bst_root, 14);
+    bst_root = insert_bst(bst_root, 4);
+
+    cout << "Binary Search Tree Inorder traversal: ";
+    bst_inorder(bst_root);
+    cout << endl;
+
+    // Avl Test
+    avl_node *avl_root = NULL;
+    avl_root = insert_avlnode(avl_root, 33);
+    avl_root = insert_avlnode(avl_root, 13);
+    avl_root = insert_avlnode(avl_root, 53);
+    avl_root = insert_avlnode(avl_root, 9);
+    avl_root = insert_avlnode(avl_root, 21);
+    avl_root = insert_avlnode(avl_root, 61);
+    avl_root = insert_avlnode(avl_root, 8);
+    avl_root = insert_avlnode(avl_root, 11);
+    cout << "AVL tree traversal:\n ";
+    print_avltree(avl_root, "", true);
+    cout << endl;
+
+    // RBT test
+    RedBlackTree test;
+    test.insert(55);
+    test.insert(40);
+    test.insert(65);
+    test.insert(60);
+    test.insert(75);
+    test.insert(57);
+
+    cout << "Red Black Tree Traversal:\n";
+    test.printTree();
+    cout << endl;
+
     return 0;
 }
