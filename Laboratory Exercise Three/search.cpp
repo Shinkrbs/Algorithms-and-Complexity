@@ -433,8 +433,6 @@ class RedBlackTree
     }
 };
 
-// Functions for recording in file
-
 // Generate random data
 vector<int> rand_data(int size) 
 {
@@ -444,6 +442,7 @@ vector<int> rand_data(int size)
     return data;
 }
 
+// Functions for recording in file
 void rec_to_text(std::string file_name, std::vector<double> &result) 
 {
     std::ofstream file(file_name);
@@ -462,63 +461,122 @@ void rec_to_text(std::string file_name, std::vector<double> &result)
 
 int main()
 {
-    // BST test
-    struct bst_node *bst_root = NULL;
-    bst_root = insert_bst(bst_root, 8);
-    bst_root = insert_bst(bst_root, 3);
-    bst_root = insert_bst(bst_root, 1);
-    bst_root = insert_bst(bst_root, 6);
-    bst_root = insert_bst(bst_root, 7);
-    bst_root = insert_bst(bst_root, 10);
-    bst_root = insert_bst(bst_root, 14);
-    bst_root = insert_bst(bst_root, 4);
+    // // BST test
+    // struct bst_node *bst_root = NULL;
+    // bst_root = insert_bst(bst_root, 8);
+    // bst_root = insert_bst(bst_root, 3);
+    // bst_root = insert_bst(bst_root, 1);
+    // bst_root = insert_bst(bst_root, 6);
+    // bst_root = insert_bst(bst_root, 7);
+    // bst_root = insert_bst(bst_root, 10);
+    // bst_root = insert_bst(bst_root, 14);
+    // bst_root = insert_bst(bst_root, 4);
 
-    cout << "Binary Search Tree Inorder traversal: ";
-    bst_inorder(bst_root);
-    cout << endl;
+    // cout << "Binary Search Tree Inorder traversal: ";
+    // bst_inorder(bst_root);
+    // cout << endl;
 
-    if (bst_search(bst_root, 9))
-        cout << "BST: found in the tree.\n";
-    else
-        cout << "BST: not found in the tree.\n";
+    // if (bst_search(bst_root, 9))
+    //     cout << "BST: found in the tree.\n";
+    // else
+    //     cout << "BST: not found in the tree.\n";
 
-    // Avl Test
-    avl_node *avl_root = NULL;
-    avl_root = insert_avlnode(avl_root, 33);
-    avl_root = insert_avlnode(avl_root, 13);
-    avl_root = insert_avlnode(avl_root, 53);
-    avl_root = insert_avlnode(avl_root, 9);
-    avl_root = insert_avlnode(avl_root, 21);
-    avl_root = insert_avlnode(avl_root, 61);
-    avl_root = insert_avlnode(avl_root, 8);
-    avl_root = insert_avlnode(avl_root, 11);
+    // // Avl Test
+    // avl_node *avl_root = NULL;
+    // avl_root = insert_avlnode(avl_root, 33);
+    // avl_root = insert_avlnode(avl_root, 13);
+    // avl_root = insert_avlnode(avl_root, 53);
+    // avl_root = insert_avlnode(avl_root, 9);
+    // avl_root = insert_avlnode(avl_root, 21);
+    // avl_root = insert_avlnode(avl_root, 61);
+    // avl_root = insert_avlnode(avl_root, 8);
+    // avl_root = insert_avlnode(avl_root, 11);
 
-    cout << "AVL tree traversal:\n ";
-    print_avltree(avl_root, "", true);
-    cout << endl;
+    // cout << "AVL tree traversal:\n ";
+    // print_avltree(avl_root, "", true);
+    // cout << endl;
 
-    if (avl_search(avl_root, 6))
-        cout << "AVL: found in the tree.\n";
-    else
-        cout << "AVL: not found in the tree.\n";
+    // if (avl_search(avl_root, 6))
+    //     cout << "AVL: found in the tree.\n";
+    // else
+    //     cout << "AVL: not found in the tree.\n";
 
-    // RBT test
-    RedBlackTree test;
-    test.insert(55);
-    test.insert(40);
-    test.insert(65);
-    test.insert(60);
-    test.insert(75);
-    test.insert(57);
+    // // RBT test
+    // RedBlackTree test;
+    // test.insert(55);
+    // test.insert(40);
+    // test.insert(65);
+    // test.insert(60);
+    // test.insert(75);
+    // test.insert(57);
 
-    cout << "Red Black Tree Traversal:\n";
-    test.printTree(); 
+    // cout << "Red Black Tree Traversal:\n";
+    // test.printTree(); 
 
-    NodePtr result = test.rbt_search(100);
-    if (result == test.getTNULL()) 
-        cout << "Key not found!" << endl;
-    else
-        cout << "Found key: " << result->data << endl;
+    // NodePtr result = test.rbt_search(100);
+    // if (result == test.getTNULL()) 
+    //     cout << "Key not found!" << endl;
+    // else
+    //     cout << "Found key: " << result->data << endl;
 
+    // Array sizes to test
+    vector<int> sizes = {10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000};
+    vector<double> result_bst, result_avl, result_rbt;
+    bst_node *bst_root = nullptr;
+    avl_node *avl_root = nullptr;
+    RedBlackTree rbt;
+    
+    // Perform Insertion
+    for (int size : sizes) 
+    {
+        vector<int> data = rand_data(size);
+        
+        // BST insertion
+
+        for (int val : data) 
+            bst_root = insert_bst(bst_root, val);
+
+        // AVL insertion
+        for (int val : data) 
+            avl_root = insert_avlnode(avl_root, val);
+
+        // RBT insertion
+        for (int val : data) 
+            rbt.insert(val);
+    }
+
+    // Perform Searching 
+    for (int size : sizes) 
+    {
+        vector<int> search_data = rand_data(size);
+        
+        // BST search
+        auto start = chrono::high_resolution_clock::now();
+        for (int val : search_data) 
+            bst_search(bst_root, val);
+        
+        auto end = chrono::high_resolution_clock::now();
+        result_bst.push_back(chrono::duration<double, milli>(end - start).count());
+
+        // AVL search
+        start = chrono::high_resolution_clock::now();
+        for (int val : search_data) 
+            avl_search(avl_root, val);
+        
+        end = chrono::high_resolution_clock::now();
+        result_avl.push_back(chrono::duration<double, milli>(end - start).count());
+
+        // RBT search
+        start = chrono::high_resolution_clock::now();
+        for (int val : search_data) 
+            rbt.rbt_search(val);
+        
+        end = chrono::high_resolution_clock::now();
+        result_rbt.push_back(chrono::duration<double, milli>(end - start).count());
+    }
+
+    rec_to_text("BSTSearchingTimes.txt", result_bst);
+    rec_to_text("AVLSearchingTimes.txt", result_avl);
+    rec_to_text("RBTSearchingTimes.txt", result_rbt);
     return 0;
 }
