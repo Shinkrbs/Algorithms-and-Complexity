@@ -389,8 +389,6 @@ class RedBlackTree
     }
 };
 
-// Functions for recording in file
-
 // Generate random data
 vector<int> rand_data(int size) 
 {
@@ -400,6 +398,7 @@ vector<int> rand_data(int size)
     return data;
 }
 
+// Functions for recording in file
 void rec_to_text(std::string file_name, std::vector<double> &result) 
 {
     std::ofstream file(file_name);

@@ -478,6 +478,168 @@ class RedBlackTree
         insertFix(node);
     }
 
+    NodePtr minimum(NodePtr node) 
+    {
+        while (node->left != TNULL) 
+            node = node->left;
+        return node;
+    }
+
+    // For balancing the tree after deletion
+    void deleteFix(NodePtr x) 
+    {
+        NodePtr s;
+
+        while (x != root && x->color == 0) 
+        {
+            if (x == x->parent->left) 
+            {
+                s = x->parent->right;
+                if (s->color == 1) 
+                {
+                    s->color = 0;
+                    x->parent->color = 1;
+                    leftRotate(x->parent);
+                    s = x->parent->right;
+                }
+
+                if (s->left->color == 0 && s->right->color == 0) 
+                {
+                    s->color = 1;
+                    x = x->parent;
+                } 
+                else
+                {
+                    if (s->right->color == 0) 
+                    {
+                        s->left->color = 0;
+                        s->color = 1;
+                        rightRotate(s);
+                        s = x->parent->right;
+                    }
+
+                    s->color = x->parent->color;
+                    x->parent->color = 0;
+                    s->right->color = 0;
+                    leftRotate(x->parent);
+                    x = root;
+                }
+            } 
+            else 
+            {
+                s = x->parent->left;
+                if (s->color == 1) 
+                {
+                    s->color = 0;
+                    x->parent->color = 1;
+                    rightRotate(x->parent);
+                    s = x->parent->left;
+                }
+
+                if (s->right->color == 0 && s->right->color == 0) 
+                {
+                    s->color = 1;
+                    x = x->parent;
+                } 
+                else 
+                {
+                    if (s->left->color == 0) 
+                    {
+                        s->right->color = 0;
+                        s->color = 1;
+                        leftRotate(s);
+                        s = x->parent->left;
+                    }
+
+                    s->color = x->parent->color;
+                    x->parent->color = 0;
+                    s->left->color = 0;
+                    rightRotate(x->parent);
+                    x = root;
+                }
+            }
+        }
+        x->color = 0;
+    }
+
+    void rbTransplant(NodePtr u, NodePtr v) 
+    {
+        if (u->parent == nullptr)
+            root = v;
+        else if (u == u->parent->left)
+            u->parent->left = v;
+        else 
+            u->parent->right = v;
+        v->parent = u->parent;
+    }
+
+    void deleteNodeHelper(NodePtr node, int key) 
+    {
+        NodePtr z = TNULL;
+        NodePtr x, y;
+
+        while (node != TNULL) 
+        {
+            if (node->data == key) 
+                z = node;
+
+            if (node->data <= key) 
+                node = node->right;
+            else 
+                node = node->left;
+        }
+
+        if (z == TNULL) 
+        {
+            cout << "Key not found in the tree" << endl;
+            return;
+        }
+
+        y = z;
+        int y_original_color = y->color;
+
+        if (z->left == TNULL) 
+        {
+            x = z->right;
+            rbTransplant(z, z->right);
+        } 
+        else if (z->right == TNULL) 
+        {
+            x = z->left;
+            rbTransplant(z, z->left);
+        } 
+        else 
+        {
+            y = minimum(z->right);
+            y_original_color = y->color;
+            x = y->right;
+
+            if (y->parent == z)
+                x->parent = y;
+            else 
+            {
+                rbTransplant(y, y->right);
+                y->right = z->right;
+                y->right->parent = y;
+            }
+
+            rbTransplant(z, y);
+            y->left = z->left;
+            y->left->parent = y;
+            y->color = z->color;
+        }
+        delete z;
+
+        if (y_original_color == 0) 
+            deleteFix(x);
+    }
+
+    // Delete Node
+    void deleteNode(int data) 
+    {
+        deleteNodeHelper(this->root, data);
+    }
+
     // Print RBT
     void printHelper(NodePtr root, string indent, bool last) 
     {
@@ -509,8 +671,6 @@ class RedBlackTree
     }
 };
 
-// Functions for recording in file
-
 // Generate random data
 vector<int> rand_data(int size) 
 {
@@ -520,6 +680,7 @@ vector<int> rand_data(int size)
     return data;
 }
 
+// Functions for recording in file
 void rec_to_text(std::string file_name, std::vector<double> &result) 
 {
     std::ofstream file(file_name);
@@ -539,46 +700,56 @@ void rec_to_text(std::string file_name, std::vector<double> &result)
 int main()
 {
     // BST test
-    // struct bst_node *bst_root = NULL;
-    // bst_root = insert_bst(bst_root, 8);
-    // bst_root = insert_bst(bst_root, 3);
-    // bst_root = insert_bst(bst_root, 1);
-    // bst_root = insert_bst(bst_root, 6);
-    // bst_root = insert_bst(bst_root, 7);
-    // bst_root = insert_bst(bst_root, 10);
-    // bst_root = insert_bst(bst_root, 14);
-    // bst_root = insert_bst(bst_root, 4);
+    struct bst_node *bst_root = NULL;
+    bst_root = insert_bst(bst_root, 8);
+    bst_root = insert_bst(bst_root, 3);
+    bst_root = insert_bst(bst_root, 1);
+    bst_root = insert_bst(bst_root, 6);
+    bst_root = insert_bst(bst_root, 7);
+    bst_root = insert_bst(bst_root, 10);
+    bst_root = insert_bst(bst_root, 14);
+    bst_root = insert_bst(bst_root, 4);
 
-    // cout << "Binary Search Tree Inorder traversal: ";
-    // bst_inorder(bst_root);
-    // cout << endl;
+    cout << "Binary Search Tree Inorder traversal: ";
+    bst_inorder(bst_root);
+    bst_deleteNode(bst_root, 10);
+    cout << endl;
+    bst_inorder(bst_root);
+    cout << endl;
 
-    // // Avl Test
-    // avl_node *avl_root = NULL;
-    // avl_root = insert_avlnode(avl_root, 33);
-    // avl_root = insert_avlnode(avl_root, 13);
-    // avl_root = insert_avlnode(avl_root, 53);
-    // avl_root = insert_avlnode(avl_root, 9);
-    // avl_root = insert_avlnode(avl_root, 21);
-    // avl_root = insert_avlnode(avl_root, 61);
-    // avl_root = insert_avlnode(avl_root, 8);
-    // avl_root = insert_avlnode(avl_root, 11);
-    // cout << "AVL tree traversal:\n ";
-    // print_avltree(avl_root, "", true);
-    // cout << endl;
+    // Avl Test
+    avl_node *avl_root = NULL;
+    avl_root = insert_avlnode(avl_root, 33);
+    avl_root = insert_avlnode(avl_root, 13);
+    avl_root = insert_avlnode(avl_root, 53);
+    avl_root = insert_avlnode(avl_root, 9);
+    avl_root = insert_avlnode(avl_root, 21);
+    avl_root = insert_avlnode(avl_root, 61);
+    avl_root = insert_avlnode(avl_root, 8);
+    avl_root = insert_avlnode(avl_root, 11);
 
-    // // RBT test
-    // RedBlackTree test;
-    // test.insert(55);
-    // test.insert(40);
-    // test.insert(65);
-    // test.insert(60);
-    // test.insert(75);
-    // test.insert(57);
+    cout << "AVL tree traversal:\n ";
+    print_avltree(avl_root, "", true);
+    avl_deleteNode(avl_root, 8);
+    cout << endl;
+    print_avltree(avl_root, "", true);
+    cout << endl;
 
-    // cout << "Red Black Tree Traversal:\n";
-    // test.printTree();
-    // cout << endl;
+    // RBT test
+    RedBlackTree test;
+    test.insert(55);
+    test.insert(40);
+    test.insert(65);
+    test.insert(60);
+    test.insert(75);
+    test.insert(57);
+
+    cout << "Red Black Tree Traversal:\n";
+    test.printTree();
+    test.deleteNode(60);
+    cout << endl;
+    test.printTree();
+    cout << endl;
 
     return 0;
 }
