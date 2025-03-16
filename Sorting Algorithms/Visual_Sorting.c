@@ -2,7 +2,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <conio.h>
+#include <Windows.h>
 
+#define UP 72
+#define DOWN 80
+#define ENTER 13
 
 // N^2 sorting algorithms
 void bubble(int* array, int size);
@@ -25,27 +30,32 @@ void swap(int* a, int* b);
 void rand_int(int* array, int size);
 
 void cmd();
+void display_menu(int selection);
+int* get_info(int* size);
 
 int main()
 {
-    int size = 10;
-    int* array = (int*)malloc(sizeof(int) * size);
+    // int size = 10;
+    // int* array = (int*)malloc(sizeof(int) * size);
 
-    rand_int(array, size);
-    print_array(array, size);
+    // rand_int(array, size);
+    // print_array(array, size);
 
     //bubble(array, size);
     //selection(array, size);
     //insertion(array, size);
     //shell(array, size);
 
-    int k = 0;
-    int kth_smallest = quick_select(array, 0, size - 1, k);
-    printf("The %d smallest element is: %d\n", k + 1, kth_smallest);
+    // int k = 0;
+    // int kth_smallest = quick_select(array, 0, size - 1, k);
+    // printf("The %d smallest element is: %d\n", k + 1, kth_smallest);
 
     //merge(array, 0, size - 1);
     //quick(array, 0, size - 1);
     //print_array(array, size);
+
+    cmd();
+    return 0;
 }
 
 void rand_int(int* array, int size)
@@ -97,7 +107,7 @@ void bubble(int* array, int size)
 
 void selection(int* array, int size)
 {
-    int small, idx_small, ctr = 1;
+    int idx_small, ctr = 1;
 
     for(int i = 0; i < size - 1; i++)
     {
@@ -111,7 +121,6 @@ void selection(int* array, int size)
         printf("Swapping %d and %d\n", array[i], array[idx_small]);
         swap(&array[i], &array[idx_small]); 
 
-        // Print Sorting Steps
         printf("Step %d: ", ctr);
         print_array(array, size);
         ctr++;
@@ -175,7 +184,6 @@ void merge_Arr(int* array, int start, int mid, int end)
 
     /* The while loop below woud execute equal to the minimun
     of mid  and (n - mid)*/
-
 
     while(ptr1 <= mid && ptr2 <= end)
     {
@@ -349,5 +357,99 @@ int partition(int* array, int start, int end)
 
 void cmd()
 {
+    int* array = NULL;
+    int selected = 0, key, size;
 
+    while(1)
+    {
+        display_menu(selected);
+        key = getch();
+
+        if(key == UP && selected > 0)
+            selected--;
+        else if(key == DOWN && selected < 7)
+            selected++;
+        else if(key == ENTER)
+        {
+            system("cls");
+
+            if (selected == 7) 
+            {
+                printf("Program Stopped\n");
+                return;
+            }
+
+            array = get_info(&size);
+            switch(selected)
+            {
+                case 0:
+                    system("cls");
+                    selection(array, size);
+                    break;
+                case 1:
+                    system("cls");
+                    bubble(array, size);
+                    break;
+                case 2:
+                    system("cls");
+                    insertion(array, size);
+                    break;
+                case 3:
+                    system("cls");
+                    shell(array, size);
+                    break;
+                case 4:
+                    system("cls");
+                    merge(array, 0, size - 1);
+                    break;
+                case 5:
+                    system("cls");
+                    quick(array, 0, size - 1);
+                    break;
+                case 6:
+                    system("cls");
+                    int k = 0;
+                    int kth_smallest = quick_select(array, 0, size - 1, k);
+                    printf("The %d smallest element is: %d\n", k + 1, kth_smallest);
+                    break;
+            }
+            printf("Sorted Array: ");
+            print_array(array, size);
+
+            free(array);
+
+            printf("Press any key to return to menu...");
+            getch();
+        }
+    }
+}
+
+void display_menu(int selected)
+{
+    system("cls");
+    printf("Visualize Sorting Steps\n\n");
+    char* options[] = {"Selection Sort", "Bubble Sort", "Insertion Sort", 
+                "Shell Sort", "Merge Sort", "Quick Sort", "Quick Select", "Exit"};
+    int num_options = sizeof(options) / sizeof(options[0]);
+
+    for (int i = 0; i < num_options; i++) 
+    {
+        if (i == selected)
+            printf(" > %s < \n", options[i]); 
+        else
+            printf("   %s   \n", options[i]);
+    }
+}
+
+int* get_info(int* size)
+{
+    printf("Enter Size of Array: ");
+    scanf("%d", size);
+
+    int* array = (int*)malloc(sizeof(int) * (*size));
+    printf("Enter %d Elements Separated by Spaces (ex. 1 2 3 4): ", *size);
+    for(int i = 0; i < *size; i++)
+        scanf("%d", &array[i]);
+
+    return array;
 }
